@@ -55,7 +55,7 @@ void display()
     printf("\n");
 }
 
-int pre(char x)
+int outStackPre(char x)
 {
     if (x == '+' || x == '-')
     {
@@ -63,7 +63,37 @@ int pre(char x)
     }
     else if (x == '*' || x == '/')
     {
+        return 3;
+    }
+    else if (x == '^')
+    {
+        return 6;
+    }
+    else if (x == '(')
+    {
+        return 7;
+    }
+
+    return 0;
+}
+
+int inStackPre(char x)
+{
+    if (x == '+' || x == '-')
+    {
         return 2;
+    }
+    else if (x == '*' || x == '/')
+    {
+        return 4;
+    }
+    else if (x == '^')
+    {
+        return 5;
+    }
+    else if (x == '(')
+    {
+        return 0;
     }
 
     return 0;
@@ -71,7 +101,7 @@ int pre(char x)
 
 int isOperand(char x)
 {
-    if (x == '+' || x == '-' || x == '*' || x == '/')
+    if (x == '+' || x == '-' || x == '*' || x == '/' || x == '(' || x == '^' || x == ')')
     {
         return 0;
     }
@@ -85,7 +115,7 @@ char *IntToPost(char *infix)
 {
     int i = 0, j = 0;
     char *postfix;
-    char len = strlen(infix);
+    int len = strlen(infix);
     postfix = (char *)malloc((len + 2) * sizeof(char));
 
     while (infix[i] != '\0')
@@ -94,9 +124,18 @@ char *IntToPost(char *infix)
         {
             postfix[j++] = infix[i++];
         }
+        else if (infix[i] == ')')
+        {
+            while (top != NULL && top->data != '(')
+            {
+                postfix[j++] = pop();
+            }
+            pop();
+            i++;
+        }
         else
         {
-            if (pre(infix[i]) > pre(top->data))
+            if (outStackPre(infix[i]) > inStackPre(top->data))
             {
                 push(infix[i++]);
             }
@@ -117,7 +156,7 @@ char *IntToPost(char *infix)
 
 int main()
 {
-    char *infix = "a+b*c-d/e";
+    char *infix = "((a+b)*c)-d^e^f";
     push('#');
 
     char *postfix = IntToPost(infix);
