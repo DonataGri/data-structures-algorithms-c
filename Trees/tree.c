@@ -19,7 +19,7 @@ void create()
     root->lchild = root->rchild = NULL;
     enqueue(&q, root);
 
-    while (!isEmpty(q))
+    while (!isEmptyQueue(q))
     {
         p = dequeue(&q);
         printf("enter left child of %d :", p->data);
@@ -121,11 +121,36 @@ void iInorder(struct Node *p)
     }
 }
 
+void levelOrder(struct Node *root)
+{
+    struct Queue q;
+    createQueue(&q, 100);
+
+    printf("%d ", root->data);
+    enqueue(&q, root);
+
+    while (!isEmptyQueue(q))
+    {
+        root = dequeue(&q);
+        if (root->lchild)
+        {
+            printf("%d ", root->lchild->data);
+            enqueue(&q, root->lchild);
+        }
+
+        if (root->rchild)
+        {
+            printf("%d ", root->rchild->data);
+            enqueue(&q, root->rchild);
+        }
+    }
+}
+
 int main(void)
 {
     create();
-    printf("\n In Order >>>>>");
-    iInorder(root);
+    printf("\n Level order >>>>>");
+    levelOrder(root);
 
     // printf("\n Post Order >>>>>");
     // postorder(root);
