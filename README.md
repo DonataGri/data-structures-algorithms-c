@@ -3,7 +3,7 @@
 Implementation of fundamental data structures and algorithms in C.
 
 Based on the course  
-_Mastering Data Structures & Algorithms using C and C++_ — Abdul Bari.
+_Mastering Data Structures & Algorithms using C and C++_ by Abdul Bari.
 
 Personal implementations based on the course.
 
