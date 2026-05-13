@@ -146,11 +146,66 @@ void levelOrder(struct Node *root)
     }
 }
 
-int count(struct Node *root)
+int countLeaf(struct Node *p)
 {
-    if (root)
+    if (p == NULL)
     {
-        return count(root->lchild) + count(root->rchild) + 1;
+        return 0;
+    }
+    if (!p->lchild && !p->rchild)
+    {
+        return 1;
+    }
+    return countLeaf(p->lchild) + countLeaf(p->rchild);
+}
+
+int countDegreeTwo(struct Node *p)
+{
+    if (p == NULL)
+    {
+        return 0;
+    }
+    if (p->lchild && p->rchild)
+    {
+        return countDegreeTwo(p->lchild) + countDegreeTwo(p->rchild) + 1;
+    }
+    else
+    {
+        return countDegreeTwo(p->lchild) + countDegreeTwo(p->rchild);
+    }
+    return 0;
+}
+
+int countDegreeOne(struct Node *p)
+{
+    if (p == NULL)
+    {
+        return 0;
+    }
+    if ((p->lchild != NULL) ^ (p->rchild != NULL))
+    {
+        return countDegreeOne(p->lchild) + countDegreeOne(p->rchild) + 1;
+    }
+    else
+    {
+        return countDegreeOne(p->lchild) + countDegreeOne(p->rchild);
+    }
+    return 0;
+}
+
+int countDegreeOneTwo(struct Node *p)
+{
+    if (p == NULL)
+    {
+        return 0;
+    }
+    if (p->lchild || p->rchild)
+    {
+        return countDegreeOneTwo(p->lchild) + countDegreeOneTwo(p->rchild) + 1;
+    }
+    else
+    {
+        return countDegreeOneTwo(p->lchild) + countDegreeOneTwo(p->rchild);
     }
     return 0;
 }
@@ -180,7 +235,7 @@ int main(void)
 {
     create();
 
-    printf("Count %d ", count(root));
+    printf("Count %d ", countDegreeOneTwo(root));
 
     printf("Height %d ", height(root));
 
