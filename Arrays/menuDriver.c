@@ -28,7 +28,7 @@ void Append(struct Array *arr, int x)
     }
 }
 
-void Insert(struct Array *arr, int index, int x)
+void InsertMax(struct Array *arr, int index, int x)
 {
     int i;
     if (index >= 0 && index <= arr->length)
@@ -519,7 +519,7 @@ int main(void)
         case 1:
             printf("Enter  element and index ");
             scanf("%d%d", &x, &index);
-            Insert(&arr1, index, x);
+            InsertMax(&arr1, index, x);
             break;
         case 2:
             printf("Enter element ");

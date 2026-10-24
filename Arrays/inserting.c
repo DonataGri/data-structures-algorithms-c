@@ -28,7 +28,7 @@ void Append(struct Array *arr, int x)
     }
 }
 
-void Insert(struct Array *arr, int index, int x)
+void InsertMax(struct Array *arr, int index, int x)
 {
     int i;
     if (index >= 0 && index <= arr->length)
