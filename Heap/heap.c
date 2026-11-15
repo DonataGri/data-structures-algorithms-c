@@ -1,76 +1,203 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-struct Array
+struct Heap
 {
-    int A[10];
+    int *data;
     int size;
-    int length;
+    int capacity;
 };
 
-void InsertMax(struct Array *arr, int n)
+void InsertMax(struct Heap *h, int n)
 {
 
     int temp, i = n;
-    temp = arr->A[n];
-    while (i > 1 && temp > arr->A[i / 2])
+    temp = h->data[i];
+    while (i > 0 && temp > h->data[(i - 1) / 2])
     {
-        arr->A[i] = arr->A[i / 2];
-        i = i / 2;
+        h->data[i] = h->data[(i - 1) / 2];
+        // move to parent
+        i = (i - 1) / 2;
     }
-    arr->A[i] = temp;
+    h->data[i] = temp;
 }
 
-void InsertMin(struct Array *arr, int n)
+void InsertMin(struct Heap *h, int n)
 {
 
     int temp, i = n;
-    temp = arr->A[n];
-    while (i > 1 && temp < arr->A[i / 2])
+    temp = h->data[n];
+    while (i > 0 && temp < h->data[(i - 1) / 2])
     {
-        arr->A[i] = arr->A[i / 2];
-        i = i / 2;
+        h->data[i] = h->data[(i - 1) / 2];
+        i = (i - 1) / 2;
     }
-    arr->A[i] = temp;
+    h->data[i] = temp;
 }
 
-void createMaxHeap(struct Array *arr)
+void pushMax(struct Heap *h, int value)
 {
 
-    int i;
-    for (i = 2; i <= arr->length; i++)
+    if (h->size >= h->capacity)
     {
-        InsertMax(arr, i);
+        return;
     }
+    h->data[h->size] = value;
+    InsertMax(h, h->size);
+    h->size++;
 }
 
-void createMinHeap(struct Array *arr)
+void pushMin(struct Heap *h, int value)
 {
 
-    int i;
-    for (i = 2; i <= arr->length; i++)
+    if (h->size >= h->capacity)
     {
-        InsertMin(arr, i);
+        return;
     }
+    h->data[h->size] = value;
+    InsertMin(h, h->size);
+    h->size++;
 }
 
-void displayHeap(struct Array arr)
+void displayHeap(struct Heap h)
 {
     int i;
     printf("\n Element in the heap are: \n");
 
-    for (i = 1; i <= arr.length; i++)
+    for (i = 0; i < h.size; i++)
     {
-        printf("%d ", arr.A[i]);
+        printf("%d ", h.data[i]);
     }
     printf("\n");
 }
 
+void displayRaw(struct Heap h)
+{
+    int i;
+    printf("\n Element in the heap are: \n");
+
+    for (i = 0; i < h.capacity; i++)
+    {
+        printf("%d ", h.data[i]);
+    }
+    printf("\n");
+}
+
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int DeleteMax(struct Heap *h)
+{
+    if (h->size == 0)
+    {
+        return -1;
+    }
+
+    int i, j, x;
+    int n = h->size - 1;
+    int top = h->data[0];
+    h->data[0] = h->data[n];
+    h->size--;
+
+    i = 0;
+    j = 2 * i + 1;
+
+    while (j < n)
+    {
+        if (j + 1 < n)
+        {
+            if (h->data[j + 1] > h->data[j])
+            {
+                j = j + 1;
+            }
+        }
+        if (h->data[i] < h->data[j])
+        {
+            swap(&h->data[i], &h->data[j]);
+            i = j;
+            j = 2 * j + 1;
+        }
+        else
+        {
+            break;
+        }
+    }
+    h->data[n] = top;
+    return top;
+}
+
+int DeleteMin(struct Heap *h)
+{
+    if (h->size == 0)
+    {
+        return -1;
+    }
+
+    int i, j, x;
+    int n = h->size - 1;
+    int top = h->data[0];
+    h->data[0] = h->data[n];
+    h->size--;
+
+    i = 0;
+    j = 2 * i + 1;
+
+    while (j < n)
+    {
+        if (j + 1 < n)
+        {
+            if (h->data[j + 1] < h->data[j])
+            {
+                j = j + 1;
+            }
+        }
+        if (h->data[i] > h->data[j])
+        {
+            swap(&h->data[i], &h->data[j]);
+            i = j;
+            j = 2 * j + 1;
+        }
+        else
+        {
+            break;
+        }
+    }
+    h->data[n] = top;
+    return top;
+}
+
 int main(void)
 {
-    struct Array arr = {{0, 10, 20, 30, 25, 5, 40, 35}, 10, 7};
-    // createMaxHeap(&arr);
-    displayHeap(arr);
-    createMinHeap(&arr);
-    displayHeap(arr);
+    int capacity = 10;
+    int *arr = malloc(capacity * sizeof(int));
+    struct Heap h = {arr, 0, capacity};
+
+    displayHeap(h);
+    pushMin(&h, 5);
+    pushMin(&h, 10);
+    pushMin(&h, 12);
+    pushMin(&h, 15);
+    pushMin(&h, 25);
+    pushMin(&h, 30);
+    pushMin(&h, 45);
+    displayHeap(h);
+
+    DeleteMin(&h);
+    DeleteMin(&h);
+    DeleteMin(&h);
+    DeleteMin(&h);
+    // Delete(&h);
+    // Delete(&h);
+    // Delete(&h);
+    // Delete(&h);
+
+    displayHeap(h);
+    displayRaw(h);
+
+    free(arr);
+    return 0;
 }
